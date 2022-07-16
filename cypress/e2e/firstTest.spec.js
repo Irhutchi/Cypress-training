@@ -42,7 +42,7 @@ describe('Our first suite', () => {
         cy.get('[data-cy="imputEmail1"]')
     })
 
-    it.only('Second  test', () => {
+    it('Second  test', () => {
         cy.visit('/')
         cy.contains('Forms').click()
         cy.contains('Form Layouts').click()
@@ -63,6 +63,43 @@ describe('Our first suite', () => {
 
         // find email field that doesn't have any uniquie identifiers
         cy.contains('nb-card','Horizontal form').find('[type="email"]')
+
+    })
+
+
+    it.only('then and wrap methods', () => {
+
+        cy.visit('/')
+        cy.contains('Forms').click()
+        cy.contains('Form Layouts').click()
+
+        // verify label text for email and password 
+        // cy.contains('nb-card', 'Using the Grid').find('[for="inputEmail1"]').should('contain', 'Email')
+        // cy.contains('nb-card', 'Using the Grid').find('[for="inputPassword2"]').should('contain', 'Password')
+        // cy.contains('nb-card', 'Basic form').find('[for="exampleInputEmail1"]').should('contain', 'Email address')
+        // cy.contains('nb-card', 'Basic form').find('[for="exampleInputPassword1"]').should('contain', 'Password')
+
+
+        cy.contains('nb-card', 'Using the Grid').then( firstForm => {   // using 'then' func it becomes a jquery object. NOT a cypress object anymore.
+            const emailLabelFirst = firstForm.find('[for="inputEmail1"]').text()
+            const passwordLabelFirst = firstForm.find('[for="inputPassword2"]').text()
+            expect(emailLabelFirst).to.equal('Email') // known as an assertion
+            expect(passwordLabelFirst).to.equal('Password')
+
+            // make an assertion that the label for password for both Using the Grid form & Basic form 
+
+            /** 1. Get the label for the 1st form - save it
+             *  2. get the label for the 2nd form - save it
+             *  3. Make assertion the first label is equal to the second label */
+            cy.contains('nb-card', 'Basic form').then( secondForm => {
+                const passwordLabelSecond = secondForm.find('[for="exampleInputPassword1"]').text()
+                expect(passwordLabelSecond).to.equal(passwordLabelFirst)
+
+                // change the context from JQuery back to Cypress context using wrap function
+                // wrap jquery method allows you to run Cypress assertions against it.
+                cy.wrap(secondForm).find('[for="exampleInputPassword1"]')
+            })
+        })
 
     })
 
