@@ -42,5 +42,29 @@ describe('Our first suite', () => {
         cy.get('[data-cy="imputEmail1"]')
     })
 
+    it.only('Second  test', () => {
+        cy.visit('/')
+        cy.contains('Forms').click()
+        cy.contains('Form Layouts').click()
+
+        cy.get('[data-cy="signInButton"]')
+
+        cy.contains('Sign in')
+
+        cy.contains('[status="warning"]','Sign in')
+
+        cy.get('#inputEmail3')
+        .parents('form') // used to locate the parent element based on the key element above
+        .find('button')  //can only be used to find the child elements inside of the parent element
+        .should('contain', 'Sign in')
+        .parents('form')
+        .find('nb-checkbox')
+        .click()
+
+        // find email field that doesn't have any uniquie identifiers
+        cy.contains('nb-card','Horizontal form').find('[type="email"]')
+
+    })
+
 })
 
