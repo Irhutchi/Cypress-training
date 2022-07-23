@@ -67,7 +67,7 @@ describe('Our first suite', () => {
     })
 
 
-    it.only('then and wrap methods', () => {
+    it('then and wrap methods', () => {
 
         cy.visit('/')
         cy.contains('Forms').click()
@@ -99,6 +99,52 @@ describe('Our first suite', () => {
                 // wrap jquery method allows you to run Cypress assertions against it.
                 cy.wrap(secondForm).find('[for="exampleInputPassword1"]')
             })
+        })
+
+    })
+
+    it('invoke command', () => {
+
+        cy.visit('/')
+        cy.contains('Forms').click()
+        cy.contains('Form Layouts').click()
+
+        // example 1.
+        cy.get('[for="exampleInputEmail1"]').should('contain', 'Email address')
+
+        // example 2.
+        cy.get('[for="exampleInputEmail1"]').then( label => {
+            expect(label.text()).to.equal('Email address')
+        })
+
+        // example 3.
+        cy.get('[for="exampleInputEmail1"]').invoke('text').then( text => {
+            expect(text).to.equal('Email address')
+        })
+
+        // locating and testing checkbox status
+        cy.contains('nb-card', 'Basic form')
+            .find('nb-checkbox') // locate the checkbox area
+            .click()   // verify if checkbox is checked
+            .find('.custom-checkbox')      // find exact locator for checkbox using unique value
+            .invoke('attr', 'class')
+            // .should('contain', 'checked') // alrtnative option next line 
+            .then(classValue => {
+                expect(classValue).to.contain('checked')
+            })
+    })
+
+    it.only('assert property', () => {
+
+        cy.visit('/')
+        cy.contains('Forms').click()
+        cy.contains('Datepicker').click()
+
+        cy.contains('nb-card', 'Common Datepicker').find('input').then( input => {
+            cy.wrap(input).click()
+            cy.get('nb-calendar-day-picker').contains('23').click()
+            cy.wrap(input).invoke('prop', 'value').should('contain', 'Jul 23, 2022')
+
         })
 
     })
