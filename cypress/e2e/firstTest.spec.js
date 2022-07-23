@@ -1,5 +1,6 @@
 /// <reference types="cypress" />
 
+const { DARK_THEME } = require("@nebular/theme")
 const { verify } = require("crypto")
 
 
@@ -152,7 +153,7 @@ describe('Our first suite', () => {
     })
 
     // testing checkboxboxes and radio buttons
-    it.only('radio button', () => {
+    it('radio button', () => {
 
         cy.visit('/')
         cy.contains('Forms').click()
@@ -183,9 +184,75 @@ describe('Our first suite', () => {
                     .eq(2) // can also use eq(0)
                     .should('be.disabled')
             })
-           
-           
+    })
+
+
+    it('check-box', () => {
+
+        // When to use check:
+            // check method is only used to work with elements of type= check & radio btns 
+            // will only work with input types, they should checkboxes or radio btns
+            // will not work on any other web element types
+            // can only check your checkbox but CANNOT uncheck a checkbox
+        // when to use click:
+            // can also work with checkboxes and radio btns - not recommended
+
+
+        cy.visit('/')
+        cy.contains('Modal & Overlays').click()
+        cy.contains('Toastr').click()
+
+        // cy.get('[type="checkbox"]').check({force: true})
+        cy.get('[type="checkbox"]').eq(0).click({force: true})
+        cy.get('[type="checkbox"]').eq(1).check({force: true})
+
+
 
     })
+
+
+    it.only('Lists and dropdowns', () => {
+
+        // verfiy values of dropdown menu
+        cy.visit('/')
+        
+        // ex.1
+        // cy.get('nav nb-select').click()
+        // cy.get('.options-list').contains('Dark').click()
+        // cy.get('nav nb-select').should('contain', 'Dark')
+        // // verify dark theme by checking the background colour attribute
+        // cy.get('nb-layout-header nav').should('have.css', 'background-color', 'rgb(34, 43, 69)')
+
+        // ex. 2  loop through an entire list of elements
+        // save 'nav var as an object
+        cy.get('nav nb-select').then( dropdown => {
+            // click on dropdown
+            cy.wrap(dropdown).click()
+            // get all available list options & iterate through list of elements
+            cy.get('.options-list nb-option').each( (listItem, index) => {
+                const itemText = listItem.text().trim() // remove leading space and save text only
+
+                const colors = {
+                    "Light": "rgb(255, 255, 255)",
+                    "Dark": "rgb(34, 43, 69)",
+                    "Cosmic": "rgb(50, 50, 89)",
+                    "Corporate": "rgb(255, 255, 255)"
+                }
+
+                cy.wrap(listItem).click()
+                cy.wrap(dropdown).should('contain', itemText) // verify input field we have selected contains the text in the dropdown
+
+                cy.get('nb-layout-header nav').should('have.css', 'background-color', colors[itemText])
+                if( index < 3) {
+                    cy.wrap(dropdown).click()
+                }
+                
+            })
+
+        })
+    })
+
+
+
 })
 
