@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+const { verify } = require("crypto")
+
 
 describe('Our first suite', () => {
 
@@ -134,7 +136,7 @@ describe('Our first suite', () => {
             })
     })
 
-    it.only('assert property', () => {
+    it('assert property', () => {
 
         cy.visit('/')
         cy.contains('Forms').click()
@@ -149,5 +151,41 @@ describe('Our first suite', () => {
 
     })
 
+    // testing checkboxboxes and radio buttons
+    it.only('radio button', () => {
+
+        cy.visit('/')
+        cy.contains('Forms').click()
+        cy.contains('Form Layouts').click()
+
+        //find locator
+        cy.contains('nb-card', 'Using the Grid')
+            .find('[type="radio"]').then(radioButtons => {
+                // check first radio button then verify
+                cy.wrap(radioButtons)
+                    .first()
+                    .check({force: true})
+                    // assertion to check the radio btn is checked
+                    .should('be.checked')
+                
+                // next check the second radio button
+                cy.wrap(radioButtons)
+                    .eq(1) // get index equal to 1
+                    .check({force: true})
+
+                // verify the first is now unchecked
+                cy.wrap(radioButtons)
+                    .first() // can also use eq(0)
+                    .should('not.be.checked')
+
+                // verfiy the third radio button is disabled
+                cy.wrap(radioButtons)
+                    .eq(2) // can also use eq(0)
+                    .should('be.disabled')
+            })
+           
+           
+
+    })
 })
 
