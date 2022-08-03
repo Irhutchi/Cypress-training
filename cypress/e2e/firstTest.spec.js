@@ -211,7 +211,7 @@ describe('Our first suite', () => {
     })
 
 
-    it.only('Lists and dropdowns', () => {
+    it('Lists and dropdowns', () => {
 
         // verfiy values of dropdown menu
         cy.visit('/')
@@ -252,6 +252,30 @@ describe('Our first suite', () => {
         })
     })
 
+    it.only('web tables', () => {
+        cy.visit('/')
+        cy.contains('Tables & Data').click()
+        cy.contains('Smart Table').click()
+        
+        // find table body first, next find table row contain string 'Larry'
+        cy.get('tbody').contains('tr', 'Larry').then( tableRow => {
+            // activate the edit row (button)
+            cy.wrap(tableRow).find('.nb-edit').click()
+            // now able to edit fields. Clear value in field first before typing new value
+            cy.wrap(tableRow).find('[placeholder="Age"]').clear().type('32')
+            // slect the checkmark to confirm change
+            cy.wrap(tableRow).find('.nb-checkmark').click()
+            // verify value is updated. Use index of column as no unique identifier
+            cy.wrap(tableRow).find('td').eq(6).should('contain', 32)
+
+        })
+
+        // 
+
+        
+
+
+    })
 
 
 })
