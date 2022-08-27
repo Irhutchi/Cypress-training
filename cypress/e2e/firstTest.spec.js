@@ -252,7 +252,7 @@ describe('Our first suite', () => {
         })
     })
 
-    it.only('web tables', () => {
+    it('web tables', () => {
         cy.visit('/')
         cy.contains('Tables & Data').click()
         cy.contains('Smart Table').click()
@@ -328,6 +328,41 @@ describe('Our first suite', () => {
 
     })
 
+    // date picker test
+    it.only('assert property', () => {
 
+        function selectDayFromCurrent(day){
+            let date = new Date()   // get current system date and time
+            date.setDate(date.getDate() + day)    // add no. of days from date
+            let futureDay = date.getDate()
+            let futureMonth = date.toLocaleString('default', {month: 'short'})
+            // format date
+            let dateAssert = futureMonth+' '+futureDay+', '+date.getFullYear()
+       
+            cy.get('nb-calendar-navigation').invoke('attr', 'ng-reflect-date').then( dateAttribute => {
+                // if attr doesn't match month we are looking for click the right arrow button
+                if(!dateAttribute.includes(futureMonth)){
+                    cy.get('[data-name="chevron-right"]').click()
+                    selectDayFromCurrent(day)
+                } else {
+                    cy.get('nb-calendar-day-picker [class="day-cell ng-star-inserted"]').contains(futureDay).click()
+                }
+        
+            })
+            return dateAssert
+        }
+
+        cy.visit('/')
+        cy.contains('Forms').click()
+        cy.contains('Datepicker').click()
+
+        cy.contains('nb-card', 'Common Datepicker').find('input').then( input => {
+            cy.wrap(input).click()
+            let dateAssert = selectDayFromCurrent(300)
+            cy.wrap(input).invoke('prop', 'value').should('contain', dateAssert)
+
+        })
+
+    })
 })
 
