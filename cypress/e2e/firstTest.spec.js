@@ -329,7 +329,7 @@ describe('Our first suite', () => {
     })
 
     // date picker test
-    it.only('assert property', () => {
+    it('assert property', () => {
 
         function selectDayFromCurrent(day){
             let date = new Date()   // get current system date and time
@@ -363,6 +363,40 @@ describe('Our first suite', () => {
 
         })
 
+    })
+
+    it('tooltip', () => {
+        cy.visit('/')
+        cy.contains('Modal & Overlays').click()
+        cy.contains('Tooltip').click()
+
+        cy.contains('nb-card', 'Colored Tooltips')
+            .contains('Default').click()
+        cy.get('nb-tooltip').should('contain', 'This is a tooltip')
+    })
+
+    // dealing with dial box outside of the DOM (alert popup in chrome browser)
+   
+    it.only('dialog box', () => {
+        cy.visit('/')
+        cy.contains('Tables & Data').click()
+        cy.contains('Smart Table').click()
+         
+        // ex 1 - not recommended approach
+        // cy.get('tbody tr').first().find('.nb-trash').click()
+        // cy.on('window:confirm', (confirm) => {
+        //     expect(confirm).to.equal('Are you sure you want to delete?')
+        // })
+
+        // ex 2 - better: if the window did not show up, the stub will be empty. 
+        // will return an empty object event, will give you the right assertion.
+        const stub = cy.stub()
+        cy.on('window:confirm', stub) 
+        
+        
+        cy.get('tbody tr').first().find('.nb-trash').click().then(() => {
+            expect(stub.getCall(0)).to.be.calledWith('Are you sure you want to delete?')
+        })
     })
 })
 
