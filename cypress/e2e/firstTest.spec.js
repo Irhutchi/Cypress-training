@@ -329,7 +329,7 @@ describe('Our first suite', () => {
     })
 
     // date picker test
-    it('assert property', () => {
+    it.only('assert property', () => {
 
         function selectDayFromCurrent(day){
             let date = new Date()   // get current system date and time
@@ -360,6 +360,8 @@ describe('Our first suite', () => {
             cy.wrap(input).click()
             let dateAssert = selectDayFromCurrent(300)
             cy.wrap(input).invoke('prop', 'value').should('contain', dateAssert)
+            cy.wrap(input).should('have.value', dateAssert) // will do exactly same thing as line above.
+
 
         })
 
@@ -377,7 +379,7 @@ describe('Our first suite', () => {
 
     // dealing with dial box outside of the DOM (alert popup in chrome browser)
    
-    it.only('dialog box', () => {
+    it('dialog box', () => {
         cy.visit('/')
         cy.contains('Tables & Data').click()
         cy.contains('Smart Table').click()
@@ -398,5 +400,45 @@ describe('Our first suite', () => {
             expect(stub.getCall(0)).to.be.calledWith('Are you sure you want to delete?')
         })
     })
+
+    // Assertions
+    it.only('chai assertions', () => {
+
+        cy.visit('/')
+        cy.contains('Forms').click()
+        cy.contains('Form Layouts').click()
+
+        // example 1.
+        cy.get('[for="exampleInputEmail1"]')
+            .should('contain', 'Email address')
+            .should('have.class', 'label')
+            .and('have.text', 'Email address')
+
+        // example 2.
+        cy.get('[for="exampleInputEmail1"]').then( label => {
+            expect(label.text()).to.equal('Email address')
+            expect(label).to.have.class('label')
+            expect(label).to.have.text('Email address')       
+        })
+
+        // example 3.
+        cy.get('[for="exampleInputEmail1"]').invoke('text').then( text => {
+            expect(text).to.equal('Email address')
+        })
+
+        // locating and testing checkbox status
+        cy.contains('nb-card', 'Basic form')
+            .find('nb-checkbox') // locate the checkbox area
+            .click()   // verify if checkbox is checked
+            .find('.custom-checkbox')      // find exact locator for checkbox using unique value
+            .invoke('attr', 'class')
+            // .should('contain', 'checked') // alrtnative option next line 
+            .then(classValue => {
+                expect(classValue).to.contain('checked')
+            })
+    })
+
+    
+
 })
 
