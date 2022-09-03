@@ -329,7 +329,7 @@ describe('Our first suite', () => {
     })
 
     // date picker test
-    it.only('assert property', () => {
+    it('assert property', () => {
 
         function selectDayFromCurrent(day){
             let date = new Date()   // get current system date and time
@@ -402,7 +402,7 @@ describe('Our first suite', () => {
     })
 
     // Assertions
-    it.only('chai assertions', () => {
+    it('chai assertions', () => {
 
         cy.visit('/')
         cy.contains('Forms').click()
