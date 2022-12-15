@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-// method to determine the state of the main menu. 
-// checking is it opened or collapsed?
-=======
-
->>>>>>> b23eb1d13123c830fff58e89bf066310a4d6ddf6
 function selectGroupMenuItem(groupName){
     cy.contains('a', groupName).then( menu => {
         cy.wrap(menu).find('.expand-state g g').invoke('attr', 'data-name').then( attr => {

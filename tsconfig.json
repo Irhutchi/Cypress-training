@@ -1,5 +1,6 @@
 {
   "compileOnSave": false,
+  "experimentalWebKitSupport": true,
   "compilerOptions": {
     "importHelpers": true,
     "module": "esnext",
